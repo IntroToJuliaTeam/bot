@@ -2,8 +2,8 @@ from typing import List
 
 import requests
 
-from src.api.exceptions import MediatorException, MediatorInitializationException
-from src.api.types import BaseRagClient, BaseYandexGPTBot, Mode
+from .exceptions import MediatorException, MediatorInitializationException
+from .types import BaseRagClient, BaseYandexGPTBot, Mode
 
 
 class Mediator:
