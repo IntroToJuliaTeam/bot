@@ -3,20 +3,21 @@ from typing import List
 import requests
 
 from .exceptions import MediatorException, MediatorInitializationException
-from .types import BaseRagClient, BaseYandexGPTBot, Mode
+from src.gpt.src.types.abc import TBaseRagClient, TYandexGPTBot
+from .types import Mode
 
 
 class Mediator:
     api: requests.Session | None
 
-    rag: BaseRagClient | None
-    gpt: BaseYandexGPTBot | None
+    rag: TBaseRagClient | None
+    gpt: TYandexGPTBot | None
 
     def __init__(
         self,
         api: requests.Session = None,
-        rag: BaseRagClient = None,
-        gpt: BaseYandexGPTBot = None,
+        rag: TBaseRagClient = None,
+        gpt: TYandexGPTBot = None,
     ):
         self.api = api
         self.rag = rag
