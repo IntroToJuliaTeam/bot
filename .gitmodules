@@ -1,0 +1,3 @@
+[submodule "src/gpt"]
+	path = src/gpt
+	url = git@github.com:IntroToJuliaTeam/gpt.git
