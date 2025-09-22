@@ -6,4 +6,5 @@ disable=broad-exception-caught,
         missing-module-docstring,
         missing-class-docstring,
         missing-function-docstring,
-        import-error
+        import-error,
+        too-few-public-methods

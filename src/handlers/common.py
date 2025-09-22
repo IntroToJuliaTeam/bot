@@ -1,13 +1,17 @@
 import logging
 
-import requests
 from telegram import Update
 from telegram.ext import ContextTypes
+
+from src.api.mediator import Mediator
+from src.clients import api_client
 
 logger = logging.getLogger(__name__)
 
 
 class BotHandlers:
+    def __init__(self):
+        self.mediator = Mediator(api=api_client)
 
     async def start(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /start"""
@@ -24,7 +28,8 @@ class BotHandlers:
     async def reset_history(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /reset - сброс истории диалога"""
         user_id = update.effective_user.id
-        requests.delete(f"/history/{user_id}", timeout=5)
+        self.mediator.clear_history(user_id)
+
         await update.message.reply_text(
             "✅ История диалога успешно очищена. Начинаем новый диалог!"
         )
@@ -34,7 +39,7 @@ class BotHandlers:
     ):
         """Показать информацию об истории диалога"""
         user_id = update.effective_user.id
-        history = requests.get(f"/history/{user_id}", timeout=5).json()
+        history = self.mediator.get_user_history(user_id)
 
         if not history:
             await update.message.reply_text("📭 История диалога пуста")
@@ -66,11 +71,9 @@ class BotHandlers:
                 chat_id=update.effective_chat.id, action="typing"
             )
 
-            response = requests.post(
-                f"/rag/{user_id}", {"message": user_message}, timeout=5
-            )
+            response = self.mediator.rag_answer(user_message, user_id)
 
-            await update.message.reply_text(response.json())
+            await update.message.reply_text(response)
 
         except Exception as e:
             logger.error("Error handling /rag command: %s", str(e))
@@ -101,10 +104,8 @@ class BotHandlers:
                 chat_id=update.effective_chat.id, action="typing"
             )
 
-            response = requests.post(
-                f"/gpt/{user_id}", {"message": user_message}, timeout=5
-            )
-            await update.message.reply_text(response.json())
+            response = self.mediator.ask_gpt(user_message, user_id)
+            await update.message.reply_text(response)
 
         except Exception as e:
             logger.error("Error handling message from %s: %s", username, str(e))
