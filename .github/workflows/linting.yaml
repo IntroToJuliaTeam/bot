@@ -1,0 +1,70 @@
+name: Python app workflow
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  lint:
+    name: Run formatting check with Pylint
+
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: |
+          uv lock
+          uv sync --frozen
+
+      - name: Run Pylint
+        run: uv run pylint .
+
+      - name: Set up Black formatter
+        uses: psf/black@stable
+        with:
+          options: "--check --diff"
+          src: "."
+
+
+  snyk:
+    name: Run Snyk security checks
+    runs-on: ubuntu-22.04
+    needs: [lint]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Prepare for Snyk
+        run: |
+          uv lock
+          uv export --no-hashes -o requirements.txt
+          pip install -r requirements.txt
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk test
+        run: snyk test --file=requirements.txt --package-manager=pip
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
