@@ -2,8 +2,9 @@ from typing import List
 
 import requests
 
-from .exceptions import MediatorException, MediatorInitializationException
 from src.gpt.src.types.abc import TBaseRagClient, TYandexGPTBot
+
+from .exceptions import MediatorException, MediatorInitializationException
 from .types import Mode
 
 

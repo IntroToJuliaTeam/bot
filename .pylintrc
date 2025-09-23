@@ -1,5 +1,5 @@
 [MASTER]
-ignore=.venv,.idea,pyproject.toml,uv.lock,.env,.env.example,rag
+ignore=.venv,.idea,pyproject.toml,uv.lock,.env,.env.example,gpt
 
 [MESSAGES CONTROL]
 disable=broad-exception-caught,
