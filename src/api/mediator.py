@@ -2,7 +2,12 @@ from typing import List
 
 import requests
 
-from src.gpt.src.types.abc import TBaseRagClient, TBaseVectorStore, TYandexGPTBot
+try:
+    from src.gpt.src.types.abc import TBaseRagClient, TBaseVectorStore, TYandexGPTBot
+except ImportError:
+    TBaseRagClient = None
+    TBaseVectorStore = None
+    TYandexGPTBot = None
 
 from .exceptions import MediatorException, MediatorInitializationException
 from .types import Mode
