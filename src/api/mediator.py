@@ -58,7 +58,9 @@ class Mediator:
             return
 
         if self.mode == Mode.API:
-            self.api.put(f"/history/{user_id}", {"role": role, "text": text}, timeout=5)
+            self.api.put(
+                f"/history/{user_id}", json={"role": role, "text": text}, timeout=5
+            )
             return
 
         raise MediatorException(
@@ -82,7 +84,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.post(
-                f"/gpt/{user_id}", {"question": question}, timeout=5
+                f"/gpt/{user_id}", json={"question": question}, timeout=5
             )
             return response.json()
 
@@ -99,7 +101,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.post(
-                f"/rag/{user_id}", {"question": question}, timeout=5
+                f"/rag/{user_id}", json={"question": question}, timeout=5
             )
             return response.json()
 
