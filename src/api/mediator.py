@@ -82,7 +82,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.post(
-                f"/history/{user_id}", {"question": question}, timeout=5
+                f"/gpt/{user_id}", {"question": question}, timeout=5
             )
             return response.json()
 
