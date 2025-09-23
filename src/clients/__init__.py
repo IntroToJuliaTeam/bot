@@ -15,7 +15,7 @@ class LiveServerSession(Session):
         return super().request(method, joined_url, *args, **kwargs)
 
 
-API_CLIENT = LiveServerSession("http://localhost:8080")
+API_CLIENT = LiveServerSession("http://0.0.0.0:8000")
 
 load_dotenv()
 

@@ -47,7 +47,7 @@ class Mediator:
             return self.gpt.get_user_history(user_id)
 
         if self.mode == Mode.API:
-            response = self.api.get(f"/history/${user_id}", timeout=5).json()
+            response = self.api.get(f"/history/{user_id}", timeout=5).json()
             return response
 
         raise MediatorException("Tried to get user history with no API or RAG client")
@@ -58,9 +58,7 @@ class Mediator:
             return
 
         if self.mode == Mode.API:
-            self.api.put(
-                f"/history/${user_id}", {"role": role, "text": text}, timeout=5
-            )
+            self.api.put(f"/history/{user_id}", {"role": role, "text": text}, timeout=5)
             return
 
         raise MediatorException(
@@ -73,7 +71,7 @@ class Mediator:
             return
 
         if self.mode == Mode.API:
-            self.api.delete(f"/history/${user_id}", timeout=5)
+            self.api.delete(f"/history/{user_id}", timeout=5)
             return
 
         raise MediatorException("Tried to clear user history with no API or RAG client")
@@ -84,7 +82,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.post(
-                f"/history/${user_id}", {"question": question}, timeout=5
+                f"/history/{user_id}", {"question": question}, timeout=5
             )
             return response.json()
 
@@ -101,7 +99,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.post(
-                f"/rag/${user_id}", {"question": question}, timeout=5
+                f"/rag/{user_id}", {"question": question}, timeout=5
             )
             return response.json()
 
