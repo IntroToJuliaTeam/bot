@@ -1,4 +1,6 @@
-from typing import List
+from __future__ import annotations
+
+from typing import List, Optional
 
 import requests
 
@@ -14,18 +16,17 @@ from .types import Mode
 
 
 class Mediator:
-    api: requests.Session | None
-
-    rag: TBaseRagClient | None
-    gpt: TYandexGPTBot | None
-    gvc: TBaseVectorStore | None
+    api: Optional[requests.Session]
+    rag: Optional["TBaseRagClient"]
+    gpt: Optional["TYandexGPTBot"]
+    gvc: Optional["TBaseVectorStore"]
 
     def __init__(
         self,
         api: requests.Session = None,
-        rag: TBaseRagClient = None,
-        gvc: TBaseVectorStore = None,
-        gpt: TYandexGPTBot = None,
+        rag: "TBaseRagClient" = None,
+        gvc: "TBaseVectorStore" = None,
+        gpt: "TYandexGPTBot" = None,
     ):
         self.api = api
         self.rag = rag
