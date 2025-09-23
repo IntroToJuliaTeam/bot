@@ -60,7 +60,6 @@ class BotHandlers:
     async def rag_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработка команды /rag"""
         user_message = " ".join(context.args)
-        user_id = update.effective_user.id
 
         if not user_message.strip():
             await update.message.reply_text(
@@ -73,7 +72,7 @@ class BotHandlers:
                 chat_id=update.effective_chat.id, action="typing"
             )
 
-            response = self.mediator.rag_answer(user_message, user_id)
+            response = self.mediator.rag_answer(user_message)
 
             await update.message.reply_text(response)
 
