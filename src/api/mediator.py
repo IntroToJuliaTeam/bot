@@ -23,10 +23,10 @@ class Mediator:
 
     def __init__(
         self,
-        api: LiveServerSession = None,
-        rag: "TBaseRagClient" = None,
-        gvc: "TBaseVectorStore" = None,
-        gpt: "TYandexGPTBot" = None,
+        api: LiveServerSession,
+        rag: "TBaseRagClient",
+        gvc: "TBaseVectorStore",
+        gpt: "TYandexGPTBot",
     ):
         self.api = api
         self.rag = rag
@@ -39,7 +39,7 @@ class Mediator:
             )
 
         self.mode = (
-            Mode.LOCAL if self.api is not None and self.rag is not None else Mode.API
+            Mode.LOCAL if (self.rag is not None and self.gpt is not None) else Mode.API
         )
 
     def get_user_history(self, user_id: int) -> List:

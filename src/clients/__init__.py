@@ -14,6 +14,7 @@ class LiveServerSession(Session):
         joined_url = urljoin(self.base_url, url)
         return super().request(method, joined_url, *args, **kwargs)
 
+
 load_dotenv()
 
 URL = os.environ["URL"]
@@ -43,7 +44,8 @@ try:
     GPT_CLIENT = YandexGPTBot(
         YandexGPTConfig(SERVICE_ACCOUNT_ID, KEY_ID, PRIVATE_KEY, FOLDER_ID)
     )
-except (ModuleNotFoundError, ImportError, KeyError):
+except (ModuleNotFoundError, ImportError, KeyError) as e:
+    print(e)
     GLOBAL_VECTOR_STORE = None
     RAG_CLIENT = None
     GPT_CLIENT = None
