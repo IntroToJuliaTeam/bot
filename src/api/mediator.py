@@ -2,7 +2,7 @@ from typing import List
 
 import requests
 
-from src.gpt.src.types.abc import TBaseRagClient, TYandexGPTBot
+from src.gpt.src.types.abc import TBaseRagClient, TBaseVectorStore, TYandexGPTBot
 
 from .exceptions import MediatorException, MediatorInitializationException
 from .types import Mode
@@ -13,15 +13,18 @@ class Mediator:
 
     rag: TBaseRagClient | None
     gpt: TYandexGPTBot | None
+    gvc: TBaseVectorStore | None
 
     def __init__(
         self,
         api: requests.Session = None,
         rag: TBaseRagClient = None,
+        gvc: TBaseVectorStore = None,
         gpt: TYandexGPTBot = None,
     ):
         self.api = api
         self.rag = rag
+        self.gvc = gvc
         self.gpt = gpt
 
         if api is None and (rag is None and gpt is None):
@@ -29,7 +32,9 @@ class Mediator:
                 "You must provide either API client or RAG class."
             )
 
-        self.mode = Mode.API if api is not None else Mode.LOCAL
+        self.mode = (
+            Mode.LOCAL if self.api is not None and self.rag is not None else Mode.API
+        )
 
     def get_user_history(self, user_id: int) -> List:
         if self.mode == Mode.LOCAL:
@@ -81,7 +86,12 @@ class Mediator:
 
     def rag_answer(self, question: str, user_id: int = None) -> str:
         if self.mode == Mode.LOCAL:
-            return self.rag.rag_answer(self.gpt, question, user_id)
+            return self.rag.rag_answer(
+                vector_store=self.gvc,
+                yandex_bot=self.gpt,
+                user_id=user_id,
+                query=question,
+            )
 
         if self.mode == Mode.API:
             response = requests.post(

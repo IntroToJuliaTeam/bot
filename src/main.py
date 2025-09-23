@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
-from src.gpt import test
 from src.handlers.common import BotHandlers
 
 logging.basicConfig(
@@ -19,8 +18,6 @@ TELEGRAM_TOKEN = os.environ["BOT_TOKEN"]
 
 def main():
     """Основная функция"""
-
-    test()
 
     try:
         logger.info("Инициализация компонентов...")

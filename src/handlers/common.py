@@ -4,14 +4,16 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from src.api.mediator import Mediator
-from src.clients import api_client
+from src.clients import API_CLIENT, GLOBAL_VECTOR_STORE, GPT_CLIENT, RAG_CLIENT
 
 logger = logging.getLogger(__name__)
 
 
 class BotHandlers:
     def __init__(self):
-        self.mediator = Mediator(api=api_client)
+        self.mediator = Mediator(
+            api=API_CLIENT, rag=RAG_CLIENT, gvc=GLOBAL_VECTOR_STORE, gpt=GPT_CLIENT
+        )
 
     async def start(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /start"""
