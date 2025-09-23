@@ -90,19 +90,17 @@ class Mediator:
 
         raise MediatorException("Tried to ask gpt with no API or RAG client")
 
-    def rag_answer(self, question: str, user_id: int = None) -> str:
+    def rag_answer(self, question: str) -> str:
         if self.mode == Mode.LOCAL:
             return self.rag.rag_answer(
                 vector_store=self.gvc,
                 yandex_bot=self.gpt,
-                user_id=user_id,
+                user_id=None,
                 query=question,
             )
 
         if self.mode == Mode.API:
-            response = self.api.post(
-                f"/rag/{user_id}", json={"question": question}, timeout=5
-            )
+            response = self.api.post("/rag/", json={"question": question}, timeout=5)
             return response.json()["answer"]
 
         raise MediatorException("Tried to ask rag with no API or RAG client")
