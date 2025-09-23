@@ -22,6 +22,8 @@ git clone https://github.com/IntroToJuliaTeam/bot.git
 
 ```
 BOT_TOKEN=...
+URL=http://localhost
+PORT=8080
 
 # для монорепозитория:
 FOLDER_ID=...

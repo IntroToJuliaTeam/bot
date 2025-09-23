@@ -14,10 +14,12 @@ class LiveServerSession(Session):
         joined_url = urljoin(self.base_url, url)
         return super().request(method, joined_url, *args, **kwargs)
 
-
-API_CLIENT = LiveServerSession("http://0.0.0.0:8000")
-
 load_dotenv()
+
+URL = os.environ["URL"]
+PORT = os.environ["PORT"]
+
+API_CLIENT = LiveServerSession(f"{URL}:{PORT}")
 
 try:
     from src.gpt import RagClient, YandexGPTBot, YandexGPTConfig, prepare_index
