@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-import requests
+from ..clients import LiveServerSession
 
 try:
     from src.gpt.src.types.abc import TBaseRagClient, TBaseVectorStore, TYandexGPTBot
@@ -16,14 +16,14 @@ from .types import Mode
 
 
 class Mediator:
-    api: Optional[requests.Session]
+    api: Optional[LiveServerSession]
     rag: Optional["TBaseRagClient"]
     gpt: Optional["TYandexGPTBot"]
     gvc: Optional["TBaseVectorStore"]
 
     def __init__(
         self,
-        api: requests.Session = None,
+        api: LiveServerSession = None,
         rag: "TBaseRagClient" = None,
         gvc: "TBaseVectorStore" = None,
         gpt: "TYandexGPTBot" = None,
@@ -47,7 +47,7 @@ class Mediator:
             return self.gpt.get_user_history(user_id)
 
         if self.mode == Mode.API:
-            response = requests.get(f"/history/${user_id}", timeout=5).json()
+            response = self.api.get(f"/history/${user_id}", timeout=5).json()
             return response
 
         raise MediatorException("Tried to get user history with no API or RAG client")
@@ -58,7 +58,7 @@ class Mediator:
             return
 
         if self.mode == Mode.API:
-            requests.put(
+            self.api.put(
                 f"/history/${user_id}", {"role": role, "text": text}, timeout=5
             )
             return
@@ -73,7 +73,7 @@ class Mediator:
             return
 
         if self.mode == Mode.API:
-            requests.delete(f"/history/${user_id}", timeout=5)
+            self.api.delete(f"/history/${user_id}", timeout=5)
             return
 
         raise MediatorException("Tried to clear user history with no API or RAG client")
@@ -83,7 +83,7 @@ class Mediator:
             return self.gpt.ask_gpt(question, user_id)
 
         if self.mode == Mode.API:
-            response = requests.post(
+            response = self.api.post(
                 f"/history/${user_id}", {"question": question}, timeout=5
             )
             return response.json()
@@ -100,7 +100,7 @@ class Mediator:
             )
 
         if self.mode == Mode.API:
-            response = requests.post(
+            response = self.api.post(
                 f"/rag/${user_id}", {"question": question}, timeout=5
             )
             return response.json()
