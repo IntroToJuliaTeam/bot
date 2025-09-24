@@ -62,9 +62,9 @@ uv run pre-commit install
 ## Запуск в докере
 
 ```commandLine
-docker build -t yandex-gpt-bot-backend .
+docker build -t yandex-gpt-bot .
 ```
 
 ```commandline
- docker run --rm -it -p 8080:8080 --env-file .env yandex-gpt-bot-backend
+ docker run --rm -it -p 8080:8080 --env-file .env yandex-gpt-bot
 ```
