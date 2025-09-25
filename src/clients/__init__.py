@@ -17,8 +17,8 @@ class LiveServerSession(Session):
 
 load_dotenv()
 
-URL = os.environ["URL"]
-PORT = os.environ["PORT"]
+URL = os.environ["BACKEND_URL"]
+PORT = os.environ["BACKEND_PORT"]
 
 API_CLIENT = LiveServerSession(f"{URL}:{PORT}")
 
