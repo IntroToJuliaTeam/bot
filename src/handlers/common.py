@@ -72,7 +72,7 @@ class BotHandlers:
         history = self.mediator.get_user_history(user_id)
 
         if not history:
-            await update.message.reply_text("📭 История диалога пуста")
+            await update.message.reply_text("Мы еще ничего с тобой не обсуждали :(")
         else:
             await context.bot.send_chat_action(
                 chat_id=update.effective_chat.id, action="typing"
