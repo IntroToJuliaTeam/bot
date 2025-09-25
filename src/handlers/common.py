@@ -115,7 +115,7 @@ class BotHandlers:
 
             response = self.mediator.rag_answer(user_message)
 
-            await update.message.reply_text(response)
+            await update.message.reply_text(response, parse_mode="Markdown")
 
         except Exception as e:
             logger.error("Error handling /julia_ta command: %s", str(e))
