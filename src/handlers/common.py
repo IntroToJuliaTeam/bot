@@ -153,6 +153,20 @@ class BotHandlers:
                 "Пожалуйста, попробуйте позже."
             )
 
+    async def handle_julia_command(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ) -> None:
+        """Обработка команды /julia в группах"""
+        message_text = " ".join(context.args) if context.args else ""
+
+        if not message_text:
+            await update.message.reply_text(
+                "Пожалуйста, введите сообщение после команды /julia"
+            )
+            return
+
+        await self.handle_message(update, context)
+
     @staticmethod
     async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик ошибок"""

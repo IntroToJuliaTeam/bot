@@ -32,10 +32,14 @@ def main():
         application.add_handler(CommandHandler("summary", handlers.get_history_summary))
         application.add_handler(CommandHandler("rag", handlers.rag_command))
 
-        application.add_handler(
-            MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.handle_message)
-        )
+        application.add_handler(CommandHandler("julia", handlers.handle_julia_command))
 
+        application.add_handler(
+            MessageHandler(
+                filters.TEXT & ~filters.COMMAND & filters.ChatType.PRIVATE,
+                handlers.handle_message,
+            )
+        )
         application.add_error_handler(BotHandlers.error_handler)
 
         logger.info("Бот запускается...")
