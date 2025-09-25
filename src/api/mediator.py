@@ -50,7 +50,7 @@ class Mediator:
 
         if self.mode == Mode.API:
             response = self.api.get(f"/history/{user_id}", timeout=TIMEOUT).json()
-            return response["answer"]
+            return response
 
         raise MediatorException("Tried to get user history with no API or RAG client")
 

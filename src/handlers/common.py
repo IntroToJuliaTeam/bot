@@ -50,8 +50,9 @@ class BotHandlers:
         if not history:
             await update.message.reply_text("📭 История диалога пуста")
         else:
-            user_messages = sum(1 for msg in history if msg.role == "user")
-            assistant_messages = sum(1 for msg in history if msg.role == "assistant")
+            print(history[0])
+            user_messages = sum(1 for msg in history if msg["role"] == "user")
+            assistant_messages = sum(1 for msg in history if msg["role"] == "assistant")
 
             await update.message.reply_text(
                 f"📚 История диалога:\n"
@@ -74,7 +75,7 @@ class BotHandlers:
                 chat_id=update.effective_chat.id, action="typing"
             )
             messages = "\n".join(
-                [f"{message.role}: {message.text}" for message in history]
+                [f"{message['role']}: {message['text']}" for message in history]
             )
 
             prompt = (
