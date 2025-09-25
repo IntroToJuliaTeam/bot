@@ -30,9 +30,9 @@ def main():
         application.add_handler(CommandHandler("reset", handlers.reset_history))
         application.add_handler(CommandHandler("history", handlers.show_history_info))
         application.add_handler(CommandHandler("summary", handlers.get_history_summary))
-        application.add_handler(CommandHandler("rag", handlers.rag_command))
+        application.add_handler(CommandHandler("julia_ta", handlers.rag_command))
 
-        application.add_handler(CommandHandler("julia", handlers.handle_julia_command))
+        application.add_handler(CommandHandler("auntie", handlers.handle_julia_command))
 
         application.add_handler(
             MessageHandler(

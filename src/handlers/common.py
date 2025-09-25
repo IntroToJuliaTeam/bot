@@ -29,7 +29,8 @@ class BotHandlers:
             "/reset - начать нашу беседу с чистого листа\n"
             "/history - посмотреть, сколько мы уже наговорили\n"
             "/summary - вспомнить наши с тобой времена\n"
-            "/rag XXX - если нужно что-то найти в документации Julia и получить мой ответ\n\n"
+            "/julia_ta XXX - найти ответ на твой вопрос в документации Julia\n"
+            "/auntie XXX - пообщаться с тобой в чате\n\n"
             "Ну что, солнышко, о чём поговорим? ☕"
         )
 
@@ -48,7 +49,9 @@ class BotHandlers:
         history = self.mediator.get_user_history(user_id)
 
         if not history:
-            await update.message.reply_text("📭 История диалога пуста")
+            await update.message.reply_text(
+                "📭 Приветик! А я тебя не помню, расскажешь о себе?"
+            )
         else:
             print(history[0])
             user_messages = sum(1 for msg in history if msg["role"] == "user")
@@ -101,7 +104,7 @@ class BotHandlers:
 
         if not user_message.strip():
             await update.message.reply_text(
-                "Пожалуйста, введите вопрос после команды /rag"
+                "Пожалуйста, введите вопрос после команды /julia_ta"
             )
             return
 
@@ -115,7 +118,7 @@ class BotHandlers:
             await update.message.reply_text(response)
 
         except Exception as e:
-            logger.error("Error handling /rag command: %s", str(e))
+            logger.error("Error handling /julia_ta command: %s", str(e))
             await update.message.reply_text(
                 "Извините, произошла ошибка при обработке вашего запроса. "
                 "Пожалуйста, попробуйте позже."
