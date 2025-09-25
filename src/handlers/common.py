@@ -1,10 +1,12 @@
 import logging
+import random
 
 from telegram import Update
 from telegram.ext import ContextTypes
 
 from src.api.mediator import Mediator
 from src.clients import API_CLIENT, GLOBAL_VECTOR_STORE, GPT_CLIENT, RAG_CLIENT
+from src.config.personality import greetings
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +20,17 @@ class BotHandlers:
     async def start(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /start"""
         await update.message.reply_text(
-            "Привет! Я бот для работы с Yandex GPT.\n"
-            "Просто напиши мне свой вопрос.\n\n"
-            "Доступные команды:\n"
-            "/start - показать это сообщение\n"
-            "/reset - очистить историю диалога\n"
-            "/history - показать количество сообщений в истории\n"
-            "/rag XXX - искать текст XXX в документации Julia и дать ответ от ИИ на этот ХХХ"
+            "Ой, здравствуй, дорогуша! 🌿\n\n"
+            f"{random.choice(greetings)}"
+            "Рассказывай, что у тебя на душе? Могу и совет дать, и просто поболтать, "
+            "и даже помочь с кодом на Julia - это мой конёк, между прочим.\n\n"
+            "Если что, вот тебе памятка:\n"
+            "/start - увидеть это приветствие снова\n"
+            "/reset - начать нашу беседу с чистого листа\n"
+            "/history - посмотреть, сколько мы уже наговорили\n"
+            "/summary - вспомнить наши с тобой времена\n"
+            "/rag XXX - если нужно что-то найти в документации Julia и получить мой ответ\n\n"
+            "Ну что, солнышко, о чём поговорим? ☕"
         )
 
     async def reset_history(self, update: Update, _context: ContextTypes.DEFAULT_TYPE):
@@ -32,9 +38,7 @@ class BotHandlers:
         user_id = update.effective_user.id
         self.mediator.clear_history(user_id)
 
-        await update.message.reply_text(
-            "✅ История диалога успешно очищена. Начинаем новый диалог!"
-        )
+        await update.message.reply_text("✅ Я закрою глаза на всё, что было до этого!")
 
     async def show_history_info(
         self, update: Update, _context: ContextTypes.DEFAULT_TYPE
@@ -56,6 +60,39 @@ class BotHandlers:
                 f"Всего сообщений: {len(history)}\n\n"
                 f"Используйте /reset для очистки истории"
             )
+
+    async def get_history_summary(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ):
+        user_id = update.effective_user.id
+        history = self.mediator.get_user_history(user_id)
+
+        if not history:
+            await update.message.reply_text("📭 История диалога пуста")
+        else:
+            await context.bot.send_chat_action(
+                chat_id=update.effective_chat.id, action="typing"
+            )
+            messages = "\n".join(
+                [f"{message.role}: {message.text}" for message in history]
+            )
+
+            prompt = (
+                """Ты - Тётя Джулия. Вспомни и перескажи КРАТКО суть нашего с тобой разговора, 
+                    но обязательно:
+            - Говори от первого лица ("я тебе рассказывала", "ты мне говорил", "мы обсуждали")
+            - Используй свой обычный теплый стиль с обращениями вроде "дорогуша", "солнышко"
+            - Добавь немного эмоций и личного отношения к обсуждаемому
+            - Можешь упомянуть что-то из своих увлечений, если это было в разговоре
+            - НЕ пиши от третьего лица, НЕ называй себя "Тётя Джулия"
+
+            Вот наш диалог:
+            """
+                + messages
+            )
+
+            response = self.mediator.ask_gpt(prompt, user_id)
+            await update.message.reply_text(response)
 
     async def rag_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработка команды /rag"""

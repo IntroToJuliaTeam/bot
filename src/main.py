@@ -29,6 +29,7 @@ def main():
         application.add_handler(CommandHandler("start", handlers.start))
         application.add_handler(CommandHandler("reset", handlers.reset_history))
         application.add_handler(CommandHandler("history", handlers.show_history_info))
+        application.add_handler(CommandHandler("summary", handlers.get_history_summary))
         application.add_handler(CommandHandler("rag", handlers.rag_command))
 
         application.add_handler(
